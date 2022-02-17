@@ -12,7 +12,7 @@ app = Flask(__name__)
 
 
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql+psycopg2://postgres:smit1303@localhost/auth'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql+psycopg2://bogvuqqqhdtvde:8cba747a9cf2ea6209fdcbb3159fa601dbacd4f9af693c1f443f762894b88f74@ec2-34-253-29-48.eu-west-1.compute.amazonaws.com:5432/ddq5q15kpm4c9f'
 app.config['SECRET_KEY'] = '12345'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
