@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+</head>
+
+<body>
+    <h1>This is Dashboard</h1>
+    <div class="container">
+        <form action="/process" method="post">
+            <div class="form-group">
+                <textarea name="quotes" id="" rows="5" class="form-control"></textarea>
+            </div>
+            <button class="btn btn-primary btn-lg btn-block" type="submit">Submit your quote</button>
+        </form>
+    </div>
+    <br>
+    <br>
+    <a href="{{url_for('quote')}}">Display Quotes</a>
+    <a href="{{url_for('logout')}}">Logout</a>
+</body>
+
+</html>
