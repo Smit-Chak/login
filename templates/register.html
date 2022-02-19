@@ -5,15 +5,37 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{url_for('static', filename = 'bootstrap.min.css')}}">
     <title>Register Page</title>
 </head>
 
 <body>
-    <h1>Register</h1>
-    <a href="{{url_for('login')}}">Already Registered? Login Here</a>
-    <br>
-    <br>
-    <form action="" method="post">{{ form.hidden_tag() }} {{ form.username }} {{ form.password }} {{ form.submit }}</form>
+
+
+    <div class="container">
+        <h2>Registration Form</h2>
+        {% for field, errors in form.errors.items() %}
+        <span style="color:red">
+            {{ ', '.join(errors)}} 
+        </span><br>{% endfor %}
+        <br>
+        <br>
+        <form method="POST">
+            {{ form.csrf_token() }}
+            <div class="row mb-3">
+                <label for="" class="col-sm-2 col-form-label">Username</label> {{ form.username(class="col-sm-5") }}
+            </div>
+            <div class="row mb-3">
+                <label for="" class="col-sm-2 col-form-label">Password</label> {{form.password(class="col-sm-5")}}
+            </div>
+            <div class="row mb-3">
+                <label for="" class="col-sm-2 col-form-label">Confirm Password</label> {{form.confirm_password(class="col-sm-5")}}
+            </div>
+            <div class="col-12">
+                {{form.submit(class="btn btn-primary")}}
+            </div>
+        </form>
+    </div>
 </body>
 
 </html>

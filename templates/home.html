@@ -10,10 +10,16 @@
 </head>
 
 <body>
-    <h1>Home Page</h1>
+    <div style="height: auto;width: auto; position: absolute; top: 25%; left: 45%;">
+        <h1>Home Page</h1>
+    </div>
+    <div style="height: auto;width: auto; position: absolute; top: 50%; left: 45%;">
+        <a href="{{url_for('login')}}" class="btn btn-outline-primary btn-lg" style="text-decoration : none">Login</a>
+        <a href="{{url_for('register')}}" class="btn btn-outline-primary btn-lg" style="text-decoration : none ">Register</a>
+    </div>
+    </div>
+    </div>
 
-    <a href="{{url_for('login')}}">Login</a>
-    <a href="{{url_for('register')}}">Register</a>
     <br>
     <br>
 </body>

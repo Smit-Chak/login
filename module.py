@@ -1,11 +1,13 @@
+from email import message
 from enum import unique
+from wsgiref import validate
 from wsgiref.validate import validator
 from flask import Flask, render_template, url_for, redirect, request
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user, current_user
 from flask_wtf import FlaskForm
 from wtforms import StringField , PasswordField, SubmitField 
-from wtforms.validators import InputRequired, Length, ValidationError
+from wtforms.validators import InputRequired, Length, ValidationError, DataRequired, EqualTo, Regexp
 from flask_bcrypt import Bcrypt
 
 app = Flask(__name__)
@@ -15,7 +17,6 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql+psycopg2://bogvuqqqhdtvde:8cba747a9cf2ea6209fdcbb3159fa601dbacd4f9af693c1f443f762894b88f74@ec2-34-253-29-48.eu-west-1.compute.amazonaws.com:5432/ddq5q15kpm4c9f'
 app.config['SECRET_KEY'] = '12345'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
 db = SQLAlchemy(app)
 bcrypt = Bcrypt(app)
 
@@ -35,22 +36,23 @@ class User(db.Model, UserMixin):
     quotes = db.Column(db.String(100))
 
 class RegisterForm(FlaskForm):
-    username = StringField(validators = [InputRequired(), Length(min = 4, max = 20)], render_kw = {"placeholder" : "Username"})
-    password = PasswordField(validators = [InputRequired(), Length(min = 4, max = 80)], render_kw = {"placeholder" : "Password"})
+    username = StringField(validators = [InputRequired(), Length(min = 5, max = 20)], render_kw = {"placeholder" : "Username"})
+    password = PasswordField(validators = [InputRequired(), Length(min = 5, max = 80), Regexp('^(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=]).*$',
+     message = "*Password should contain alteast 1 uppercase, lowercase, special symbol")],
+      render_kw = {"placeholder" : "Password"})
+    confirm_password = PasswordField(validators = [DataRequired(message='*Required'), EqualTo('password' , message = "*Password doesn't match")], render_kw = {'placeholder' : 'Confirm Password'})
     submit = SubmitField("Register")
-
     def validate_username(self, username):
         existing_username = User.query.filter_by(username = username.data).first()
         if existing_username :
             raise ValidationError(
-                "Username already Exists."
+                f"Username already Exists."
             )
+
 class LoginForm(FlaskForm):
     username = StringField(validators = [InputRequired(), Length(min = 4, max = 20)], render_kw = {"placeholder" : "Username"})
     password = PasswordField(validators = [InputRequired(), Length(min = 4, max = 80)], render_kw = {"placeholder" : "Password"})
-    submit = SubmitField("Register")
-
-
+    submit = SubmitField("Login")
 
 @app.route('/')
 def home():
