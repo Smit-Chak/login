@@ -12,10 +12,14 @@
 <body>
     <div class="container">
         <h2>Login Form</h2>
-        {% for field, errors in form.errors.items() %}
         <span style="color:red">
+            {{ msg }}
+        </span> {% for field, errors in form.errors.items() %}
+        <span>
+
             {{ ', '.join(errors)}} 
-        </span><br>{% endfor %}
+        </span>
+        <br> {% endfor %}
         <br>
         <br>
         <form method="POST">
@@ -24,6 +28,7 @@
                 <label for="" class="col-sm-2 col-form-label">Username</label> {{ form.username(class="col-sm-5") }}
             </div>
             <div class="row mb-3">
+
                 <label for="" class="col-sm-2 col-form-label">Password</label> {{form.password(class="col-sm-5")}}
             </div>
             <div class="col-12">

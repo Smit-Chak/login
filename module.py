@@ -54,6 +54,7 @@ class LoginForm(FlaskForm):
     password = PasswordField(validators = [InputRequired(), Length(min = 4, max = 80)], render_kw = {"placeholder" : "Password"})
     submit = SubmitField("Login")
 
+
 @app.route('/')
 def home():
     result = User.query.all()
@@ -88,7 +89,9 @@ def login():
             if bcrypt.check_password_hash(user.password , form.password.data):
                 login_user(user)
                 return redirect(url_for('dashboard'))
-    return render_template('login.html', form = form)
+            else :
+                return render_template('login.html',form = form ,  msg = '*Incorrect Password')
+    return render_template('login.html', form = form, msg = '')
 
 
 
