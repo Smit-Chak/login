@@ -2,7 +2,7 @@ from email import message
 from enum import unique
 from wsgiref import validate
 from wsgiref.validate import validator
-from flask import Flask, render_template, url_for, redirect, request
+from flask import Flask, render_template, url_for, redirect, request, session
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user, current_user
 from flask_wtf import FlaskForm
@@ -68,7 +68,8 @@ def quote():
 @app.route('/dashboard', methods=['GET', 'POST'])
 @login_required
 def dashboard():
-    return render_template('dashboard.html')
+    user = session['user']
+    return render_template('dashboard.html', user = user)
 
 @app.route('/process', methods=['GET', 'POST'])
 def process():
@@ -88,9 +89,13 @@ def login():
         if user :
             if bcrypt.check_password_hash(user.password , form.password.data):
                 login_user(user)
+                session['user'] = user.username
+                print(user.username)
                 return redirect(url_for('dashboard'))
             else :
                 return render_template('login.html',form = form ,  msg = '*Incorrect Password')
+        else :
+                return render_template('login.html', form = form, msg = "*Username doesn't exist")
     return render_template('login.html', form = form, msg = '')
 
 
