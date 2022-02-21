@@ -1,3 +1,4 @@
+
 from email import message
 from enum import unique
 from wsgiref import validate
@@ -6,7 +7,8 @@ from flask import Flask, render_template, url_for, redirect, request, session
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user, current_user
 from flask_wtf import FlaskForm
-from wtforms import StringField , PasswordField, SubmitField 
+from sqlalchemy import ForeignKey
+from wtforms import StringField , PasswordField, SubmitField , BooleanField
 from wtforms.validators import InputRequired, Length, ValidationError, DataRequired, EqualTo, Regexp
 from flask_bcrypt import Bcrypt
 
@@ -33,7 +35,17 @@ class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key = True)
     username = db.Column(db.String(20), nullable = False, unique = True)
     password = db.Column(db.String(80), nullable = False)
+    quotes = db.relationship('Quote', backref = 'auth')
+
+class Quote(db.Model):
+    __tablename__ = 'quote'
+    id = db.Column(db.Integer, primary_key = True)
     quotes = db.Column(db.String(100))
+    complete = db.Column(db.Boolean , default = False)
+    user_id = db.Column(db.Integer, db.ForeignKey('auth.id'))
+
+#class isComplete(FlaskForm):
+#    check = BooleanField()
 
 class RegisterForm(FlaskForm):
     username = StringField(validators = [InputRequired(), Length(min = 5, max = 20)], render_kw = {"placeholder" : "Username"})
@@ -57,13 +69,13 @@ class LoginForm(FlaskForm):
 
 @app.route('/')
 def home():
-    result = User.query.all()
     return render_template('home.html')
 
 @app.route('/quote', methods=['GET', 'POST'])
 def quote():
-    result = User.query.all()
-    return render_template('quote.html', result = result)
+    user = session['user']
+    u_quote = Quote.query.filter_by(auth = current_user)
+    return render_template('quote.html', quote = u_quote, user = user)
 
 @app.route('/dashboard', methods=['GET', 'POST'])
 @login_required
@@ -74,10 +86,11 @@ def dashboard():
 @app.route('/process', methods=['GET', 'POST'])
 def process():
         quotes = request.form['quotes']
-        row_changed = User.query.filter_by(username = current_user.username).update(dict(quotes = quotes))
-        #print(current_user.username)
+        user_quotes = Quote(quotes = quotes , auth = current_user)
+        db.session.add(user_quotes)
         db.session.commit()
-        return render_template('dashboard.html')
+        user = session['user']
+        return render_template('dashboard.html', user = user)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -90,7 +103,7 @@ def login():
             if bcrypt.check_password_hash(user.password , form.password.data):
                 login_user(user)
                 session['user'] = user.username
-                print(user.username)
+                #print(user.username)
                 return redirect(url_for('dashboard'))
             else :
                 return render_template('login.html',form = form ,  msg = '*Incorrect Password')
@@ -121,3 +134,11 @@ def logout():
     logout_user()
     return redirect(url_for('login'))
 
+@app.route('/update', methods=['POST'])
+def update():
+    ck_id = request.form
+    for i in ck_id:
+        if(ck_id[i] == 'on'):
+            Quote.query.filter_by(id = i,auth = current_user).update(dict(complete = True))
+            db.session.commit()
+    return redirect('/quote')
