@@ -49,7 +49,7 @@ class Quote(db.Model):
 
 class RegisterForm(FlaskForm):
     username = StringField(validators = [InputRequired(), Length(min = 5, max = 20)], render_kw = {"placeholder" : "Username"})
-    password = PasswordField(validators = [InputRequired(), Length(min = 5, max = 80), Regexp('^(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=]).*$',
+    password = PasswordField(validators = [InputRequired(), Length(min = 5, max = 80), Regexp('^(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&+=]).*$',
      message = "*Password should contain alteast 1 uppercase, lowercase, special symbol")],
       render_kw = {"placeholder" : "Password"})
     confirm_password = PasswordField(validators = [DataRequired(message='*Required'), EqualTo('password' , message = "*Password doesn't match")], render_kw = {'placeholder' : 'Confirm Password'})
