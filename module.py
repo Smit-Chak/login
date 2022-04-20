@@ -48,7 +48,7 @@ class Quote(db.Model):
 #    check = BooleanField()
 
 class RegisterForm(FlaskForm):
-    username = StringField(validators = [InputRequired(), Length(min = 5, max = 20)], render_kw = {"placeholder" : "Username"})
+    username = StringField(validators = [InputRequired(), Length(min = 5, max = 20)], render_kw = {"placeholder" : "Doctor UID"})
     password = PasswordField(validators = [InputRequired(), Length(min = 5, max = 80), Regexp('^(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&+=]).*$',
      message = "*Password should contain alteast 1 uppercase, lowercase, special symbol")],
       render_kw = {"placeholder" : "Password"})
@@ -62,7 +62,7 @@ class RegisterForm(FlaskForm):
             )
 
 class LoginForm(FlaskForm):
-    username = StringField(validators = [InputRequired(), Length(min = 4, max = 20)], render_kw = {"placeholder" : "Username"})
+    username = StringField(validators = [InputRequired(), Length(min = 4, max = 20)], render_kw = {"placeholder" : "Doctor UID"})
     password = PasswordField(validators = [InputRequired(), Length(min = 4, max = 80)], render_kw = {"placeholder" : "Password"})
     submit = SubmitField("Login")
 
